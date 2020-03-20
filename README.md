@@ -13,7 +13,8 @@ Specifically, these "ARC parts" implement a DSL with two missions:
 Ensure complete coverage by including catch-all parts, such as an imp that stamps an 
 arbitrary grid pattern at an arbitrary location. But also regularize to penalize using these.
   
-By randomly sampling the space of ARC clans, train deep neural nets to perform the corresponding inverses:
+By randomly sampling the space of ARC clans, train deep neural nets to invert the operations performed by the
+ARC parts:
 * Given an ARC input grid, work backward to assemble an "input-generation" clan that emits it.
 * Given an input-generation clan and an ARC output grid, work backward to assemble an "output-transformation" clan
   that maps the input-grid-generation clan into an "output-generation" clan that emits the output grid.
