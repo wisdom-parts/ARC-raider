@@ -2,24 +2,25 @@
 
 When life gives you an [Abstraction and Reasoning Corpus](https://github.com/fchollet/ARC), make a weld!
 
-## Approach
+## Approach Overview
 
 Create a pile of [Wisdom](https://github.com/wisdom-parts/wisdom-kotlin) parts that implement the ARC priors.
 Specifically, these "ARC parts" implement a DSL with two missions:
 
-  * Generate any ARC input grid.
-  * Transform any input-generation clan into the corresponding output-generation clan.
+* Generate any ARC input grid. (Ensure complete coverage by including catch-all parts, such as an imp that stamps an 
+  arbitrary grid pattern at an arbitrary location. But also regularize to penalize using these.)
   
-Ensure complete coverage by including catch-all parts, such as an imp that stamps an 
-arbitrary grid pattern at an arbitrary location. But also regularize to penalize using these.
+* Transform any input-generation clan into the corresponding output-generation clan.
   
 By randomly sampling the space of ARC clans, train deep neural nets to invert the operations performed by the
 ARC parts:
+
 * Given an ARC input grid, work backward to assemble an "input-generation" clan that emits it.
+
 * Given an input-generation clan and an ARC output grid, work backward to assemble an "output-transformation" clan
   that maps the input-grid-generation clan into an "output-generation" clan that emits the output grid.
   
-Also by sampling ARC clans, train a neural net to estimate the likelihood a given candidate solution 
+Also by sampling ARC clans, train a neural net to estimate the likelihood that a given candidate solution 
 will give the correct answer when run against a given input-generation clan. Take into account the candidate's 
 success rate across a few training pairs.
   
@@ -52,3 +53,15 @@ Solve a given ARC task as follows:
 * [joy-data-kotlin](https://github.com/joy-prime/joy-data-kotlin)
 * [wisdom-kotlin](https://github.com/wisdom-parts/wisdom-kotlin)
 * [Deep Java Library (DJL)](https://djl.ai/)  
+
+## Approach to the Main Implementation Challenges
+
+### ARC Parts Generate an Input Grid
+
+### ARC Parts Transform Input-Generation Clan into Output-Generation Clan
+
+### DNN Examines Input Grid and Assembles ARC Parts
+
+### DNN Examines Input-Generation Clan and Input Grid and Assembles ARC Parts
+
+### DNN Examines Candidate Solution to Estimate Likelihood Correct
