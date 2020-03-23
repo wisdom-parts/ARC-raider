@@ -51,8 +51,8 @@ Solve a given ARC task as follows:
 
 * Kotlin
 * [joy-data-kotlin](https://github.com/joy-prime/joy-data-kotlin)
-* [wisdom-kotlin](https://github.com/wisdom-parts/wisdom-kotlin)
 * [Deep Java Library (DJL)](https://djl.ai/)  
+* [wisdom-kotlin](https://github.com/wisdom-parts/wisdom-kotlin)
 
 ## Approach to the Main Implementation Challenges
 
