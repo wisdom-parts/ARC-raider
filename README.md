@@ -1,6 +1,7 @@
 # arcweld
 
-When life gives you an [Abstraction and Reasoning Corpus](https://github.com/fchollet/ARC), make a weld!
+When life gives you an [Abstraction and Reasoning Corpus](https://github.com/fchollet/ARC), pull out your welder
+and build a machine!
 
 ## Approach Overview
 
