@@ -7,7 +7,18 @@ val arcHome = File(
         { "ARC_HOME environment variable is not set" })
 )
 
-class Task
+data class Task(
+    val trainingPairs: List<ArcPair>,
+    val testPairs: List<ArcPair>
+)
+
+data class ArcPair(
+    val input: ArcGrid,
+    val output: ArcGrid
+)
+
+class ArcGrid() {
+}
 
 fun loadTasksFromDir(dir: File): List<Task> {
     TODO()
