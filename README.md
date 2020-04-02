@@ -1,6 +1,6 @@
 # ARC-raider
 
-raiding the new [Abstraction and Reasoning Corpus](https://github.com/fchollet/ARC)
+raiders of the new [Abstraction and Reasoning Corpus](https://github.com/fchollet/ARC)
 
 ## Approach Overview
 
