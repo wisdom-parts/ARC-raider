@@ -1,4 +1,4 @@
-package parts.wisdom.arcweld
+package parts.wisdom.arcraider
 
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
