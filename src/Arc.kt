@@ -1,10 +1,10 @@
-package parts.wisdom.arcweld
+package parts.wisdom.arcraider
 
 import java.io.File
 
-val arcHome = File(
-    checkNotNull(System.getenv("ARC_HOME"),
-        { "ARC_HOME environment variable is not set" })
+val arcData = File(
+    checkNotNull(System.getenv("ARC_DATA"),
+        { "ARC_DATA environment variable is not set" })
 )
 
 data class Task(

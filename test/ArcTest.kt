@@ -1,14 +1,14 @@
 package parts.wisdom.arcraider
 
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import java.io.File
 
-object ArcSpec : Spek({
-    describe("loadTaskFromFile") {
-        it("spot checks") {
-            val file = File(arcHome, "data/training/0a938d79.json")
-            val task = loadTaskFromFile(file)
-        }
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class ArcTest {
+    @Test
+    fun `load Task from file`() {
+        val file = File(arcData, "training/0a938d79.json")
+        val task = loadTaskFromFile(file)
     }
-})
+}
