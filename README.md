@@ -57,7 +57,7 @@ pair of grids in which the line is lengthened or shortened in its direction.
 
 Imagine there are only four kinds of ARC tasks in this world: 
 shorten / lengthen the line toward right-else-up or left-else-down.
-Right-else-up the line's direction will be toward the right unless it is vertical, in which case upward.
+Right-else-up means the line's direction will be toward the right unless it is vertical, in which case upward.
 
 In this world, our ARC solver's job is pretty simple:
 * Recognize the line in a training input grid. (We only need a single example.)
