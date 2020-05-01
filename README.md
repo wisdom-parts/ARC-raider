@@ -67,7 +67,7 @@ In this world, our ARC solver's job is pretty simple:
 * Recognize the line in the test input grid.
 * Generate the output grid by shortening or lengthening the input line in the correct direction.
 
-In this world, we our input-generation imps might look something like this:
+In this world, our imps might look something like this:
 
 ```kotlin
 object X : Role<Int>()
