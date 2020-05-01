@@ -47,6 +47,95 @@ Solve a given ARC task as follows:
   construct our proposed solution by applying the output-transformation clan to the input-generation clan and 
   then using the resulting output-generation clan to construct an output grid.
         
+## Example
+
+Imagine a drastically simpler version of the ARC problem set where the only available abstraction is straight lines
+that can be extended or shortened. Each line has a color, a starting point, a direction, and a length. 
+Each grid has exactly one line. A line's direction is one of horizontal to the right, diagonal to the lower right, 
+vertically down, etc. The direction cannot be determined from a single grid, but can be determined from an input/output 
+pair of grids in which the line is lengthened or shortened in its direction. 
+
+Imagine there are only four kinds of ARC tasks in this world: 
+shorten / lengthen the line toward right-else-up or left-else-down.
+Right-else-up the line's direction will be toward the right unless it is vertical, in which case upward.
+
+In this world, our ARC solver's job is pretty simple:
+* Recognize the line in a training input grid. (We only need a single example.)
+* Compare to the line in the output grid.
+* Determine whether the line was shortened or lengthened.
+* Determine whether the line's direction kind is upper right or lower left.
+* Recognize the line in the test input grid.
+* Generate the output grid by shortening or lengthening the input line in the correct direction.
+
+In this world, we our input-generation imps might look something like this:
+
+```kotlin
+object X : Role<Int>()
+object Y : Role<Int>()
+
+open class Coords(vararg parts: Part) : Mix(*parts) {
+    val x by X
+    val y by Y 
+}
+
+enum class DeltaCoord { MINUS1, ZERO, PLUS1 }
+
+object DeltaX : Role<DeltaCoord>()
+object DeltaY : Role<DeltaCoord>()
+
+open class DeltaCoords(vararg parts: Part) : Mix(*parts) {
+    val deltaX by DeltaX
+    val deltaY by DeltaY 
+}
+
+enum class Color { RED, GREEN, /* ... */ }
+
+object TheColor : Role<Color>()
+
+open class Line(vararg parts: Part) : Mix(*parts) {
+    val start by StartCoords
+    val direction by Direction
+    val length by Length
+    val color by TheColor
+
+    fun draw(grid: ArcGrid): ArcGrid = TODO()
+}
+
+object TheLine : Role<Line>()
+
+object Width : Role<Int>()
+object Height : Role<Height>()
+
+open class Grid(vararg parts: Part) : Mix(*parts) {
+    val width by Width
+    val height by Height
+}
+
+object TheGrid : Role<Grid>()
+
+open class Generator(vararg parts: Part) : Mix(*parts) {
+    val grid by TheGrid
+    val line by TheLine
+
+    fun make() = line.draw(grid.make())
+}
+
+enum class DirectionRule { RIGHT_ELSE_UP, DOWN_ELSE_LEFT }
+
+object TheDirectionRule : Role<DirectionRule>() 
+
+enum class LengthRule { SHORTEN, LENGTHEN }
+
+object TheLengthRule : Role<LengthRule>() 
+
+open class OutputTransformation(vararg parts: Part) : Mix(*parts) {
+    val directionRule by TheDirectionRule
+    val lengthRule by TheLengthRule
+
+    fun transform(inputGenerator: Generator): Generator = TODO()
+}
+```
+
 ## Implementation Stack
 
 * Kotlin
