@@ -62,8 +62,8 @@ Right-else-up the line's direction will be toward the right unless it is vertica
 In this world, our ARC solver's job is pretty simple:
 * Recognize the line in a training input grid. (We only need a single example.)
 * Compare to the line in the output grid.
-* Determine whether the line was shortened or lengthened.
-* Determine whether the line's direction kind is upper right or lower left.
+* Determine whether the rule is to shorten or lengthen the line.
+* Determine whether the line should be interpreted as right-else-up or as left-else-down.
 * Recognize the line in the test input grid.
 * Generate the output grid by shortening or lengthening the input line in the correct direction.
 
