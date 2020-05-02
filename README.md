@@ -7,7 +7,7 @@ raiders of the new [Abstraction and Reasoning Corpus](https://github.com/fcholle
 Create a pile of [Wisdom](https://github.com/wisdom-parts/wisdom-kotlin) parts that implement the ARC priors.
 Specifically, these "ARC parts" implement a DSL with two missions:
 
-* Generate any ARC input grid. (Ensure complete coverage by including catch-all parts, such as an imp that stamps an 
+* Generate any ARC grid. (Ensure complete coverage by including catch-all parts, such as an imp that stamps an 
   arbitrary grid pattern at an arbitrary location. But also regularize to penalize using these.)
   
 * Transform any input-generation clan into the corresponding output-generation clan.
@@ -22,7 +22,7 @@ ARC parts:
   
 Also by sampling ARC clans, train a neural net to estimate the likelihood that a given candidate solution 
 will give the correct answer when run against a given input-generation clan. Take into account the candidate's 
-success rate across a few training pairs.
+success rate across the available training pairs.
   
 Solve a given ARC task as follows:
 
