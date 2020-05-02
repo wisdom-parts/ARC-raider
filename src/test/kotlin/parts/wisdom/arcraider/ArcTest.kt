@@ -8,7 +8,7 @@ import java.io.File
 class ArcTest {
     @Test
     fun `load Task from file`() {
-        val file = File(arcData, "training/0a938d79.json")
+        val file = File(this::class.java.classLoader.getResource("extend_right.json").toURI())
         val task = loadTaskFromFile(file)
     }
 }

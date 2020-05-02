@@ -1,31 +1,31 @@
 package parts.wisdom.arcraider
 
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonConfiguration
 import java.io.File
 
-val arcData = File(
-    checkNotNull(System.getenv("ARC_DATA"),
-        { "ARC_DATA environment variable is not set" })
-)
+typealias ArcGrid = List<List<Int>>
 
+@Serializable
 data class Task(
-    val trainingPairs: List<ArcPair>,
-    val testPairs: List<ArcPair>
+    val train: List<ArcPair>,
+    val test: List<ArcPair>
 )
 
+@Serializable
 data class ArcPair(
     val input: ArcGrid,
     val output: ArcGrid
 )
-
-class ArcGrid() {
-}
 
 fun loadTasksFromDir(dir: File): List<Task> {
     TODO()
 }
 
 fun loadTaskFromFile(file: File): Task {
-    TODO()
+    val json = Json(JsonConfiguration.Stable)
+    return json.parse(Task.serializer(), file.readText())
 }
 
 fun loadTaskFromString(taskJson: String): Task {
