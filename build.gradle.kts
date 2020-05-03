@@ -12,6 +12,7 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0")
+    implementation("org.joy.prime:joy-data-kotlin:0.0.1")
     testImplementation("org.junit.jupiter:junit-jupiter:5.6.2")
 }
 
