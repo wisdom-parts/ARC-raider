@@ -5,7 +5,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import java.io.File
 
-typealias ArcGrid = List<List<Int>>
+typealias SerializedGrid = List<List<Int>>
 
 @Serializable
 data class Task(
@@ -15,8 +15,8 @@ data class Task(
 
 @Serializable
 data class ArcPair(
-    val input: ArcGrid,
-    val output: ArcGrid
+    val input: SerializedGrid,
+    val output: SerializedGrid
 )
 
 fun loadTasksFromDir(dir: File): List<Task> {
