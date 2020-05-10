@@ -1,0 +1,22 @@
+package parts.wisdom.arcraider.visualization
+
+import parts.wisdom.arcraider.loadTaskFromFile
+import java.awt.EventQueue
+import java.io.File
+
+private const val WINDOW_HEIGHT_PIXEL = 600
+private const val WINDOW_WIDTH_PIXEL = 800
+
+private fun createAndShowGUI() {
+    val frame = ARCWindow(WINDOW_WIDTH_PIXEL, WINDOW_HEIGHT_PIXEL, "ARCRaider")
+    val task = loadTaskFromFile(
+            File(object {}.javaClass.classLoader.getResource("extend_right.json").toURI()))
+
+    val grid = Grid(task.test[0].input)
+    frame.add(GridPane(grid))
+    frame.isVisible = true
+}
+
+fun main(args: Array<String>) {
+    EventQueue.invokeLater(::createAndShowGUI)
+}
