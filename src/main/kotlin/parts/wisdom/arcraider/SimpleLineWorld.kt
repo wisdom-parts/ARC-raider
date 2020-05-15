@@ -2,6 +2,7 @@ package parts.wisdom.arcraider
 
 import me.joypri.Part
 import me.joypri.to
+import parts.wisdom.arcraider.visualization.Grid as VisualGrid
 
 /**
  *
@@ -25,13 +26,11 @@ open class Generator(vararg parts: Part) : ArcMix(*parts) {
     val grid by TheGrid
     val line by TheLine
 
-    fun makeGrid(): DavidsGrid {
-        return DavidsGrid(grid.width) {
-            1.rangeTo(grid.height).map { Color.NONE }.toTypedArray()
-        }
+    fun makeGrid(): VisualGrid {
+        return VisualGrid(grid.width, grid.height, emptyList())
     }
 
-    override fun invoke(grid: DavidsGrid): DavidsGrid {
+    override fun invoke(grid: VisualGrid): VisualGrid {
         return line(grid)
     }
 }

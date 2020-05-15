@@ -2,11 +2,13 @@ package parts.wisdom.arcraider
 
 import me.joypri.Mix
 import me.joypri.Part
+import parts.wisdom.arcraider.visualization.Square
+import parts.wisdom.arcraider.visualization.Grid as VisualGrid
 import java.lang.IllegalArgumentException
 
 abstract class ArcMix(vararg parts: Part) : Mix(*parts) {
 
-    abstract operator fun invoke(grid: DavidsGrid): DavidsGrid
+    abstract operator fun invoke(grid: VisualGrid): VisualGrid
 }
 
 open class Grid(vararg parts: Part) : Mix(*parts) {
@@ -26,10 +28,10 @@ open class Dot(vararg parts: Part) : ArcMix(*parts) {
     val start by Start
     val color by TheColor
 
-    override fun invoke(grid: DavidsGrid): DavidsGrid {
-        return grid.also {
-            it[start.y][start.x] = color
-        }
+    override fun invoke(grid: VisualGrid): VisualGrid {
+        val newSquares = grid.squares.toMutableList()
+        newSquares.add(Square(start.x, start.y, color.ordinal))
+        return grid.copy(squares = newSquares)
     }
 }
 
@@ -43,14 +45,17 @@ open class Line(vararg parts: Part) : ArcMix(*parts) {
         if (length <= 0) throw IllegalArgumentException("Line must have a positive length!")
     }
 
-    override fun invoke(grid: DavidsGrid): DavidsGrid {
+    override fun invoke(grid: VisualGrid): VisualGrid {
+        val newSquares = grid.squares.toMutableList()
+        newSquares.add(Square(start.x, start.y, color.ordinal))
+
         val (xStart, yStart) = start
         for (delta in 0.until(length)) {
             when (direction) {
-                Direction.RIGHT -> grid[yStart][xStart + delta] = color
-                Direction.UP -> grid[yStart - delta][xStart] = color
+                Direction.RIGHT -> newSquares.add(Square(xStart + delta, yStart, color.ordinal))
+                Direction.UP -> newSquares.add(Square(xStart,yStart - delta, color.ordinal))
             }
         }
-        return grid
+        return grid.copy(squares = newSquares)
     }
 }

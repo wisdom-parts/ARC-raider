@@ -13,12 +13,7 @@ object TheDirection : Role<Direction>()
 object TheGrid : Role<Grid>()
 object TheLine : Role<Line>()
 
-
-// TODO: Replace this with the actual type.
-typealias DavidsGrid = Array<Array<Color>>
-
 enum class Color {
-    NONE,
     BLACK,
     BLUE,
     RED,
