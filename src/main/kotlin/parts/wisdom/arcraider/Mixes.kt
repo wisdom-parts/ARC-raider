@@ -24,6 +24,14 @@ open class Coords(vararg parts: Part) : Mix(*parts) {
     operator fun component2() = y
 }
 
+open class CoordsDelta(vararg parts: Part) : Mix(*parts) {
+    val xOffset by X
+    val yOffset by Y
+
+    operator fun component1() = xOffset
+    operator fun component2() = yOffset
+}
+
 open class Dot(vararg parts: Part) : ArcMix(*parts) {
     val start by Start
     val color by TheColor
