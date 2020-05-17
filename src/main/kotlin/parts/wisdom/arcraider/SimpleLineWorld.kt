@@ -11,8 +11,8 @@ import parts.wisdom.arcraider.visualization.Grid as VisualGrid
 
 
 val myGrid = Grid(
-        Height to 5,
-        Width to 3
+        Height to 6,
+        Width to 6
 )
 
 val myLine = Line(
@@ -22,20 +22,33 @@ val myLine = Line(
         Length to 1
 )
 
+val myTransformation = ExtensionLineTransformation(
+        TheLine to myLine,
+        Extension to 1
+)
+
 open class Generator(vararg parts: Part) : ArcMix(*parts) {
     val grid by TheGrid
-    val line by TheLine
+    val shape by Shape
 
     fun makeGrid(): VisualGrid {
         return VisualGrid(grid.width, grid.height, emptyList())
     }
 
     override fun invoke(grid: VisualGrid): VisualGrid {
-        return line(grid)
+        return shape(grid)
     }
 }
 
-fun doStuff() {
-    val gen = Generator(TheGrid to myGrid, TheLine to myLine)
-    gen(gen.makeGrid())
+fun main() {
+    val gen = Generator(TheGrid to myGrid, Shape to myLine)
+    val grid = gen(gen.makeGrid())
+
+    val gen2 = Generator(TheGrid to myGrid, Shape to myTransformation)
+    val grid2 = gen2(gen2.makeGrid())
+
+    print(grid)
+    println("-----")
+    print(grid2)
+
 }
