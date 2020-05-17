@@ -30,4 +30,4 @@ enum class Color {
     PINK
 }
 
-enum class Direction { UP, RIGHT }
+enum class Direction { DOWN, RIGHT }
