@@ -3,9 +3,15 @@ package parts.wisdom.arcraider.visualization
 import parts.wisdom.arcraider.SerializedGrid
 import parts.wisdom.arcraider.Task
 import parts.wisdom.arcraider.loadTaskFromFile
-import java.awt.Component
 import java.awt.Dimension
-import javax.swing.*
+import javax.swing.Box
+import javax.swing.BoxLayout
+import javax.swing.JButton
+import javax.swing.JFileChooser
+import javax.swing.JFrame
+import javax.swing.JLabel
+import javax.swing.JPanel
+import javax.swing.JToggleButton
 
 private const val GAP_SIZE = 12
 private const val GRID_SIZE = 40
@@ -37,7 +43,6 @@ class ARCWindow(width: Int, height: Int, title: String, task: Task) : JFrame() {
             add(Box.createRigidArea(Dimension(0, GAP_SIZE)))
             add(
                     Box.createHorizontalBox().apply {
-                        alignmentY = Component.TOP_ALIGNMENT
                         add(Box.createRigidArea(Dimension(GAP_SIZE, 0)))
                         add(createBrowseButton())
                         add(Box.createRigidArea(Dimension(GAP_SIZE, 0)))
