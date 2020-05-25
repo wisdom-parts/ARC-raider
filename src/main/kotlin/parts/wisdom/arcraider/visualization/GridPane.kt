@@ -10,16 +10,10 @@ private const val PANEL_INSET_PIXELS = 10
 
 class GridPane(var grid: Grid) : JPanel() {
 
-    fun resetGrid(grid: Grid) {
-        this.grid = grid
-        this.revalidate()
-        this.repaint()
-    }
-
-    private fun xPixelsPerSquare() : Int = (width - PANEL_INSET_PIXELS) /  grid.widthSquares
-    private fun yPixelsPerSquare() : Int = (height - PANEL_INSET_PIXELS) / grid.heightSquares
-    private fun xStartPixels() : Int = (width - xPixelsPerSquare() * grid.widthSquares) / 2
-    private fun yStartPixels() : Int = (height - yPixelsPerSquare() * grid.heightSquares) / 2
+    private fun xPixelsPerSquare(): Int = (width - PANEL_INSET_PIXELS) / grid.widthSquares
+    private fun yPixelsPerSquare(): Int = (height - PANEL_INSET_PIXELS) / grid.heightSquares
+    private fun xStartPixels(): Int = (width - xPixelsPerSquare() * grid.widthSquares) / 2
+    private fun yStartPixels(): Int = (height - yPixelsPerSquare() * grid.heightSquares) / 2
 
     override fun paintComponent(g: Graphics) {
         super.paintComponent(g)
@@ -45,7 +39,7 @@ class GridPane(var grid: Grid) : JPanel() {
         graphics2d.dispose()
     }
 
-    fun gridSquaresToPixels(xGridSquares : Int, yGridSquares : Int) : Pair<Int, Int>{
+    private fun gridSquaresToPixels(xGridSquares: Int, yGridSquares: Int): Pair<Int, Int> {
         val xPixels = xStartPixels() + xGridSquares * xPixelsPerSquare()
         val yPixels = yStartPixels() + yGridSquares * yPixelsPerSquare()
         return Pair(xPixels, yPixels)
