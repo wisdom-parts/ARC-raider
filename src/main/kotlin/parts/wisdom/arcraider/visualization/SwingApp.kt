@@ -9,11 +9,11 @@ private const val WINDOW_WIDTH_PIXEL = 800
 
 private fun createAndShowGUI() {
     val task = loadTaskFromFile(
-            File(object {}.javaClass.classLoader.getResource("extend_right.json").toURI()))
+            File(object {}.javaClass.classLoader.getResource("extend_right.json")!!.toURI()))
     val frame = ARCWindow(WINDOW_WIDTH_PIXEL, WINDOW_HEIGHT_PIXEL, "ARCRaider", task)
     frame.isVisible = true
 }
 
-fun main(args: Array<String>) {
+fun main() {
     EventQueue.invokeLater(::createAndShowGUI)
 }
