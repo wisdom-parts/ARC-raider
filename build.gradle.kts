@@ -13,6 +13,10 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0")
     implementation("org.joy.prime:joy-data-kotlin:0.0.1")
+    implementation("parts.wisdom.djlkotlin:api:0.0.1")
+    implementation("parts.wisdom.djlkotlin:basicdataset:0.0.1")
+    implementation("parts.wisdom.djlkotlin:model-zoo:0.0.1")
+    implementation("org.slf4j:slf4j-simple:1.7.30")
     testImplementation("org.junit.jupiter:junit-jupiter:5.6.2")
 }
 
@@ -22,3 +26,7 @@ tasks.test {
 		events("passed", "skipped", "failed")
 	}
 }
+
+val compileKotlin: org.jetbrains.kotlin.gradle.tasks.KotlinCompile by tasks
+
+compileKotlin.kotlinOptions.jvmTarget = "1.8"
