@@ -1,8 +1,18 @@
 # ARC-raider
 
-raiders of the new [Abstraction and Reasoning Corpus](https://github.com/fchollet/ARC)
+Raiders of the new [Abstraction and Reasoning Corpus](https://github.com/fchollet/ARC).
 
-## Approach Overview
+Design work currently happening in this
+[Google Doc](https://docs.google.com/document/d/11_GscmgLro_pU52z3FmWVsNtzItZaUvL9QVhNcfZo8E/edit?usp=sharing).
+
+## Implementation Stack
+
+* Kotlin
+* [joy-data-kotlin](https://github.com/joy-prime/joy-data-kotlin)
+* [Deep Java Library (DJL)](https://djl.ai/)  
+* [wisdom-kotlin](https://github.com/wisdom-parts/wisdom-kotlin)
+
+## (Deprecated) Approach Overview
 
 Create a pile of [Wisdom](https://github.com/wisdom-parts/wisdom-kotlin) parts that implement the ARC priors.
 Specifically, these "ARC parts" implement a DSL with two missions:
@@ -136,21 +146,4 @@ open class OutputTransformation(vararg parts: Part) : Mix(*parts) {
 }
 ```
 
-## Implementation Stack
 
-* Kotlin
-* [joy-data-kotlin](https://github.com/joy-prime/joy-data-kotlin)
-* [Deep Java Library (DJL)](https://djl.ai/)  
-* [wisdom-kotlin](https://github.com/wisdom-parts/wisdom-kotlin)
-
-## Approach to the Main Implementation Challenges
-
-### ARC Parts Generate an Input Grid
-
-### ARC Parts Transform Input-Generation Clan into Output-Generation Clan
-
-### DNN Examines Input Grid and Assembles ARC Parts
-
-### DNN Examines Input-Generation Clan and Input Grid and Assembles ARC Parts
-
-### DNN Examines Candidate Solution to Estimate Likelihood Correct
