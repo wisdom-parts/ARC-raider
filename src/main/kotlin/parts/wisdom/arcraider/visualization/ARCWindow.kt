@@ -3,67 +3,83 @@ package parts.wisdom.arcraider.visualization
 import parts.wisdom.arcraider.SerializedGrid
 import parts.wisdom.arcraider.Task
 import parts.wisdom.arcraider.loadTaskFromFile
+import java.awt.BorderLayout
 import java.awt.Dimension
 import javax.swing.Box
 import javax.swing.BoxLayout
-import javax.swing.JButton
-import javax.swing.JFileChooser
 import javax.swing.JFrame
 import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.JToggleButton
+import kotlin.math.max
 
-private const val GAP_SIZE = 12
-private const val GRID_SIZE = 40
+private const val GAP_SIZE_PX = 12
+private const val GRID_SIZE_PX = 400
 
-typealias TaskGrids = Pair<List<GridPane>, List<GridPane>>
+typealias TaskGrids = List<Pair<GridPane, GridPane>>
 
-class ARCWindow(width: Int, height: Int, title: String, task: Task) : JFrame() {
+class ARCWindow(title: String, task: Task) : JFrame() {
 
-    private var taskType = TaskType.TEST
+    private var taskType = TaskType.TRAIN
     private val content = JPanel()
 
     init {
-        createUI(width, height, title, task)
+        createUI(title, task)
     }
 
-    private fun createUI(width: Int, height: Int, title: String, task: Task) {
+    private fun createUI(title: String, task: Task) {
         setTitle(title)
         defaultCloseOperation = EXIT_ON_CLOSE
-        setSize(width, height)
         setLocationRelativeTo(null)
         content.layout = BoxLayout(content, BoxLayout.Y_AXIS)
-        add(content)
+
+        val root = JPanel().apply {
+            layout = BorderLayout()
+            add(
+                    FileBrowser(System.getProperty("user.home")) {
+                        refresh(loadTaskFromFile(it))
+                    },
+                    BorderLayout.WEST
+            )
+            add(content, BorderLayout.CENTER)
+        }
+        add(root)
 
         renderTask(task)
+        pack()
     }
 
     private fun renderTask(task: Task) {
         content.apply {
-            add(Box.createRigidArea(Dimension(0, GAP_SIZE)))
+            add(Box.createRigidArea(Dimension(0, GAP_SIZE_PX)))
             add(
                     Box.createHorizontalBox().apply {
-                        add(Box.createRigidArea(Dimension(GAP_SIZE, 0)))
-                        add(createBrowseButton())
-                        add(Box.createRigidArea(Dimension(GAP_SIZE, 0)))
-                        add(createToggle(task, TaskType.TEST))
-                        add(Box.createRigidArea(Dimension(GAP_SIZE, 0)))
+                        add(Box.createRigidArea(Dimension(GAP_SIZE_PX, 0)))
                         add(createToggle(task, TaskType.TRAIN))
+                        add(Box.createRigidArea(Dimension(GAP_SIZE_PX, 0)))
+                        add(createToggle(task, TaskType.TEST))
                         add(Box.createHorizontalGlue())
                     }
             )
             add(
                     Box.createHorizontalBox().apply {
-                        val (inputGrids, outputGrids) = createFromTask(task)
-                        add(Box.createRigidArea(Dimension(GAP_SIZE, 0)))
-                        add(createGridBox("Input", inputGrids))
-                        add(Box.createRigidArea(Dimension(GAP_SIZE / 2, 0)))
+                        add(Box.createRigidArea(Dimension(GAP_SIZE_PX, 0)))
                         add(Box.createHorizontalGlue())
-                        add(Box.createRigidArea(Dimension(GAP_SIZE / 2, 0)))
-                        add(createGridBox("Output", outputGrids))
-                        add(Box.createRigidArea(Dimension(GAP_SIZE, 0)))
+                        add(JLabel("Input"))
+                        add(Box.createHorizontalGlue())
+                        add(JLabel("Output"))
+                        add(Box.createHorizontalGlue())
+                        add(Box.createRigidArea(Dimension(GAP_SIZE_PX, 0)))
                     }
             )
+            val gridPairs = createFromTask(task)
+            gridPairs.forEach { (inputGrid, outputGrid) ->
+                add(
+                        createGridBox(inputGrid, outputGrid)
+                )
+                add(Box.createRigidArea(Dimension(0, GAP_SIZE_PX)))
+            }
+            add(Box.createRigidArea(Dimension(0, GAP_SIZE_PX)))
             add(Box.createVerticalGlue())
         }
     }
@@ -75,34 +91,16 @@ class ARCWindow(width: Int, height: Int, title: String, task: Task) : JFrame() {
         content.repaint()
     }
 
-    private fun createGridBox(label: String, grids: List<GridPane>) =
-            Box.createVerticalBox().apply {
-                add(
-                        Box.createHorizontalBox().apply {
-                            add(Box.createHorizontalGlue())
-                            add(JLabel(label))
-                            add(Box.createHorizontalGlue())
-                        }
-                )
-                add(Box.createRigidArea(Dimension(0, GAP_SIZE / 2)))
-                grids.forEach {
-                    add(it)
-                    add(Box.createRigidArea(Dimension(0, GAP_SIZE / 2)))
-                }
+    private fun createGridBox(inputGrid: GridPane, outputGrid: GridPane) =
+            Box.createHorizontalBox().apply {
+                add(Box.createRigidArea(Dimension(GAP_SIZE_PX, 0)))
+                add(inputGrid)
+                add(Box.createHorizontalGlue())
+                add(Box.createRigidArea(Dimension(GAP_SIZE_PX * 2, 0)))
+                add(Box.createHorizontalGlue())
+                add(outputGrid)
+                add(Box.createRigidArea(Dimension(GAP_SIZE_PX, 0)))
             }
-
-    private fun createBrowseButton(): JButton {
-        return JButton("Browse").apply {
-            addActionListener {
-                val fileChooser = JFileChooser()
-                val result = fileChooser.showOpenDialog(null)
-                if (result == JFileChooser.APPROVE_OPTION) {
-                    val task = loadTaskFromFile(fileChooser.selectedFile)
-                    refresh(task)
-                }
-            }
-        }
-    }
 
     private fun createToggle(task: Task, taskType: TaskType): JToggleButton {
         return JToggleButton(taskType.label, this.taskType == taskType).apply {
@@ -119,9 +117,13 @@ class ARCWindow(width: Int, height: Int, title: String, task: Task) : JFrame() {
     }
 
     private fun createFromTask(task: Task): TaskGrids {
-        fun gridPane(serializedGrid: SerializedGrid): GridPane {
-            return GridPane(Grid(serializedGrid)).apply {
-                preferredSize = Dimension(GRID_SIZE, GRID_SIZE)
+        fun gridPane(serializedGrid: SerializedGrid, isOutput: Boolean): GridPane {
+            val grid = Grid(serializedGrid)
+            return GridPane(grid, isOutput).apply {
+                val largerDimen = max(grid.widthSquares, grid.heightSquares)
+                val height = (GRID_SIZE_PX / largerDimen) * grid.heightSquares
+                val width = (GRID_SIZE_PX / largerDimen) * grid.widthSquares
+                preferredSize = Dimension(width, height)
             }
         }
 
@@ -129,14 +131,9 @@ class ARCWindow(width: Int, height: Int, title: String, task: Task) : JFrame() {
             TaskType.TEST -> task.test
             TaskType.TRAIN -> task.train
         }
-        val inputs = mutableListOf<GridPane>()
-        val outputs = mutableListOf<GridPane>()
-        arcPairs.forEach { (input, output) ->
-            inputs.add(gridPane(input))
-            outputs.add(gridPane(output))
+        return arcPairs.map { (input, output) ->
+            gridPane(input, false) to gridPane(output, true)
         }
-
-        return inputs to outputs
     }
 }
 
