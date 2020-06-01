@@ -1,4 +1,4 @@
-package parts.wisdom.madarc
+package parts.wisdom.hdezninirola.lineworld
 
 import parts.wisdom.arcraider.Direction
 

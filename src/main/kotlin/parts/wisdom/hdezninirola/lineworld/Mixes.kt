@@ -1,4 +1,4 @@
-package parts.wisdom.madarc
+package parts.wisdom.hdezninirola.lineworld
 
 import me.joypri.Mix
 import me.joypri.Part
