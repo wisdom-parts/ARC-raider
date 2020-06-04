@@ -24,6 +24,14 @@ open class Coords(vararg parts: Part) : Mix(*parts) {
     operator fun component2() = y
 }
 
+open class CoordsDelta(vararg parts: Part) : Mix(*parts) {
+    val xOffset by X
+    val yOffset by Y
+
+    operator fun component1() = xOffset
+    operator fun component2() = yOffset
+}
+
 open class Dot(vararg parts: Part) : ArcMix(*parts) {
     val start by Start
     val color by TheColor
@@ -51,7 +59,7 @@ open class Line(vararg parts: Part) : ArcMix(*parts) {
         for (delta in 0.until(length)) {
             when (direction) {
                 Direction.RIGHT -> newSquares.add(Square(xStart + delta, yStart, color.ordinal))
-                Direction.UP -> newSquares.add(Square(xStart,yStart - delta, color.ordinal))
+                Direction.DOWN -> newSquares.add(Square(xStart,yStart - delta, color.ordinal))
             }
         }
         return grid.copy(squares = newSquares)
