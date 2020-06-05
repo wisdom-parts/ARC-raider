@@ -18,8 +18,9 @@ class FileBrowser(dir: String, onFileSelected: (File) -> Unit = { }) : JPanel() 
         override fun treeExpanded(event: TreeExpansionEvent?) {
             val subtree = (event?.path?.lastPathComponent as? DefaultMutableTreeNode) ?: return
             if (subtree.depth < 2) {
-                subtree.removeAllChildren()
-                TreeExplorer(tree, subtree).exploreNodes(3)
+                for (child in subtree.children()) {
+                    TreeExplorer(child as DefaultMutableTreeNode).exploreNodes(3)
+                }
             }
         }
 
@@ -43,17 +44,15 @@ class FileBrowser(dir: String, onFileSelected: (File) -> Unit = { }) : JPanel() 
             preferredSize = Dimension(200, 500)
         }
         add(scrollPane)
-        TreeExplorer(tree, rootNode).exploreNodes(3)
+        TreeExplorer(rootNode).exploreNodes(3)
     }
 
     private inner class TreeExplorer(
-            private val tree: JTree,
             private val root: DefaultMutableTreeNode
     ) {
 
         fun exploreNodes(depth: Int) {
             createChildren(root, depth)
-            tree.updateUI()
         }
 
         private fun createChildren(node: DefaultMutableTreeNode, depth: Int) {
