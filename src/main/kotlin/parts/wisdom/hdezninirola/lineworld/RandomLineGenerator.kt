@@ -17,7 +17,7 @@ val lineGeneratorSequence = sequence {
 
         yield(Line(X to x,
                 Y to y,
-                TheColor to Color.values()[(Color.values().indices).random()],
+                TheColor to ArcColor.values()[(ArcColor.values().indices).random()],
                 TheDirection to direction,
                 Length to length)
         )

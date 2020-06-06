@@ -16,7 +16,7 @@ val myGrid = Grid(
 )
 
 val myLine = Line(
-        TheColor to Color.RED,
+        TheColor to ArcColor.RED,
         TheDirection to Direction.RIGHT,
         Start to Coords(X to 2, Y to 3),
         Length to 1

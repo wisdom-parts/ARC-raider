@@ -14,13 +14,13 @@ val myGrid = Rectangle(
         Y to 0,
         Height to 6,
         Width to 6,
-        TheColor to Color.BLACK
+        TheColor to ArcColor.BLACK
 )
 
 val myLine = Line(
         X to 1,
         Y to 1,
-        TheColor to Color.RED,
+        TheColor to ArcColor.RED,
         TheDirection to Direction.RIGHT,
         Length to 3
 )
