@@ -57,7 +57,7 @@ Solve a given ARC task as follows:
   construct our proposed solution by applying the output-transformation clan to the input-generation clan and 
   then using the resulting output-generation clan to construct an output grid.
         
-## Example
+## Example: Line World
 
 Imagine a drastically simpler version of the ARC problem set where the only available abstraction is straight lines
 that can be extended or shortened. Each line has a color, a starting point, a direction, and a length. 
