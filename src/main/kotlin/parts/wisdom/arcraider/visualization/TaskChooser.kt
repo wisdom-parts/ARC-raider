@@ -12,14 +12,14 @@ import javax.swing.tree.DefaultTreeModel
 
 class FileBrowser(dir: String, onFileSelected: (File) -> Unit = { }) : JPanel() {
 
-    private lateinit var tree: JTree
+    private val tree: JTree
 
-    private val nodeExpansionListener = object: TreeExpansionListener {
+    private val nodeExpansionListener = object : TreeExpansionListener {
         override fun treeExpanded(event: TreeExpansionEvent?) {
             val subtree = (event?.path?.lastPathComponent as? DefaultMutableTreeNode) ?: return
             if (subtree.depth < 2) {
                 for (child in subtree.children()) {
-                    TreeExplorer(child as DefaultMutableTreeNode).exploreNodes(3)
+                    exploreNodes(child as DefaultMutableTreeNode, 3)
                 }
             }
         }
@@ -44,31 +44,26 @@ class FileBrowser(dir: String, onFileSelected: (File) -> Unit = { }) : JPanel() 
             preferredSize = Dimension(200, 500)
         }
         add(scrollPane)
-        TreeExplorer(rootNode).exploreNodes(3)
+        exploreNodes(rootNode, 3)
     }
 
-    private inner class TreeExplorer(
-            private val root: DefaultMutableTreeNode
-    ) {
+    private fun exploreNodes(root: DefaultMutableTreeNode, depth: Int) {
+        createChildren(root, depth)
+    }
 
-        fun exploreNodes(depth: Int) {
-            createChildren(root, depth)
-        }
-
-        private fun createChildren(node: DefaultMutableTreeNode, depth: Int) {
-            if (depth <= 0) return
-            // List all json files in directory, excluding hidden files.
-            val files = node.file().listFiles { file ->
-                !file.name.startsWith(".") && (file.isDirectory || file.extension == "json")
-            } ?: return
-            // Alphabetize the files to make it easier to look through.
-            files.sort()
-            for (file in files) {
-                val childNode = DefaultMutableTreeNode(FileNode(file))
-                node.add(childNode)
-                if (file.isDirectory) {
-                    createChildren(childNode, depth - 1)
-                }
+    private fun createChildren(node: DefaultMutableTreeNode, depth: Int) {
+        if (depth <= 0) return
+        // List all json files in directory, excluding hidden files.
+        val files = node.file().listFiles { file ->
+            !file.name.startsWith(".") && (file.isDirectory || file.extension == "json")
+        } ?: return
+        // Alphabetize the files to make it easier to look through.
+        files.sort()
+        for (file in files) {
+            val childNode = DefaultMutableTreeNode(FileNode(file))
+            node.add(childNode)
+            if (file.isDirectory) {
+                createChildren(childNode, depth - 1)
             }
         }
     }
