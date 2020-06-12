@@ -3,14 +3,12 @@ package parts.wisdom.arcraider.visualization
 import parts.wisdom.arcraider.SerializedGrid
 import parts.wisdom.arcraider.Task
 import parts.wisdom.arcraider.loadTaskFromFile
+import parts.wisdom.djbrick.lineworld.Game
+import parts.wisdom.djbrick.lineworld.GameProgress
+import parts.wisdom.djbrick.lineworld.LineGame
 import java.awt.BorderLayout
 import java.awt.Dimension
-import javax.swing.Box
-import javax.swing.BoxLayout
-import javax.swing.JFrame
-import javax.swing.JLabel
-import javax.swing.JPanel
-import javax.swing.JToggleButton
+import javax.swing.*
 import kotlin.math.max
 
 private const val GAP_SIZE_PX = 12
@@ -41,7 +39,7 @@ class ARCWindow(title: String, task: Task) : JFrame() {
             layout = BorderLayout()
             add(
                     FileBrowser(arcDir) {
-                        refresh(loadTaskFromFile(it))
+                        refresh(loadTaskFromFile(it), null)
                     },
                     BorderLayout.WEST
             )
@@ -49,11 +47,12 @@ class ARCWindow(title: String, task: Task) : JFrame() {
         }
         add(root)
 
+        renderButtonBar(task)
         renderTask(task)
         pack()
     }
 
-    private fun renderTask(task: Task) {
+    private fun renderButtonBar(task: Task) {
         content.apply {
             add(Box.createRigidArea(Dimension(0, GAP_SIZE_PX)))
             add(
@@ -62,9 +61,16 @@ class ARCWindow(title: String, task: Task) : JFrame() {
                         add(createToggle(task, TaskType.TRAIN))
                         add(Box.createRigidArea(Dimension(GAP_SIZE_PX, 0)))
                         add(createToggle(task, TaskType.TEST))
+                        add(Box.createRigidArea(Dimension(GAP_SIZE_PX, 0)))
+                        add(createGameToggle(task))
                         add(Box.createHorizontalGlue())
                     }
             )
+        }
+    }
+
+    private fun renderTask(task: Task) {
+        content.apply {
             add(
                     Box.createHorizontalBox().apply {
                         add(Box.createRigidArea(Dimension(GAP_SIZE_PX, 0)))
@@ -88,9 +94,35 @@ class ARCWindow(title: String, task: Task) : JFrame() {
         }
     }
 
-    private fun refresh(task: Task) {
+    private fun renderGame(task : Task, game : Game) {
+        val input = game.getInputGrid()
+        val output = game.getOutputGrid()
+        val curGrid = game.getCurrentGrid()
+
+        content.apply {
+            add(Box.createHorizontalBox().apply {
+                add(Box.createRigidArea(Dimension(GAP_SIZE_PX, 0)))
+                add(GridPane(input, false))
+                add(Box.createRigidArea(Dimension(GAP_SIZE_PX, 0)))
+                add(GridPane(curGrid, false))
+                add(Box.createHorizontalGlue())
+                add(Box.createRigidArea(Dimension(GAP_SIZE_PX * 2, 0)))
+                add(Box.createHorizontalGlue())
+                add(GridPane(output, true))
+                add(Box.createRigidArea(Dimension(GAP_SIZE_PX, 0)))
+            })
+        }
+
+    }
+
+    private fun refresh(task: Task, game: Game?) {
         content.removeAll()
-        renderTask(task)
+        renderButtonBar(task)
+        if (game != null) {
+            renderGame(task, game)
+        } else {
+            renderTask(task)
+        }
         content.revalidate()
         content.repaint()
     }
@@ -111,11 +143,30 @@ class ARCWindow(title: String, task: Task) : JFrame() {
             addActionListener {
                 if (this@ARCWindow.taskType != taskType) {
                     this@ARCWindow.taskType = taskType
-                    refresh(task)
+                    refresh(task, null)
                 } else {
                     // Prevent toggling if we are already in this state.
                     isSelected = true
                 }
+            }
+        }
+    }
+
+    private fun createGameToggle(task: Task) : JToggleButton {
+        return JToggleButton("Game", false).apply {
+            addActionListener {
+                val game = LineGame()
+                refresh(task, game)
+                val gameProgress = object : GameProgress {
+                    override fun report() {
+                        SwingUtilities.invokeLater {
+                            refresh(task, game)
+                        }
+                    }
+                }
+                Thread(Runnable() {
+                    game.run(gameProgress)
+                }).start()
             }
         }
     }
