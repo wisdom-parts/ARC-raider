@@ -33,10 +33,14 @@ class ARCWindow(title: String, task: Task) : JFrame() {
         setLocationRelativeTo(null)
         content.layout = BoxLayout(content, BoxLayout.Y_AXIS)
 
+
+        // If the environment variable is set, use it, otherwise default to the home directory.
+        val arcEnv = System.getenv("ARC_HOME")
+        val arcDir = if (arcEnv.isNullOrEmpty()) System.getProperty("user.home") else arcEnv
         val root = JPanel().apply {
             layout = BorderLayout()
             add(
-                    FileBrowser(System.getProperty("user.home")) {
+                    FileBrowser(arcDir) {
                         refresh(loadTaskFromFile(it))
                     },
                     BorderLayout.WEST
