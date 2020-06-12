@@ -59,7 +59,7 @@ open class Line(vararg parts: Part) : ArcMix(*parts) {
         for (delta in 0.until(length)) {
             when (direction) {
                 Direction.RIGHT -> newSquares.add(Square(xStart + delta, yStart, color.ordinal))
-                Direction.DOWN -> newSquares.add(Square(xStart,yStart - delta, color.ordinal))
+                Direction.DOWN -> newSquares.add(Square(xStart,yStart + delta, color.ordinal))
             }
         }
         return grid.copy(squares = newSquares)
