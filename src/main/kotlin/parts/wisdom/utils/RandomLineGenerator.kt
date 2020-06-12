@@ -19,10 +19,8 @@ class RandomLineGenerator(seed: Long? = null, gridWidth: Int, gridHeight: Int) {
     val lineGeneratorSequence = sequence {
         while (true) {
             val direction = Direction.values()[(0..1).random()]
-            val xOffset = if (direction == Direction.RIGHT) 1 else 0
-            val yOffset = if (direction == Direction.DOWN) 1 else 0
-            val x = (0 until gridWidth - xOffset).random()
-            val y = (0 until gridHeight - yOffset).random()
+            val x = (0 until gridWidth - 1).random()
+            val y = (0 until gridHeight - 1).random()
             val length =
                     if (direction == Direction.RIGHT) (1..gridWidth - x).random()
                     else (1..gridHeight - y).random()
