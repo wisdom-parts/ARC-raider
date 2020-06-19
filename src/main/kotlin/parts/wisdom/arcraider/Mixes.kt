@@ -8,7 +8,14 @@ import java.lang.IllegalArgumentException
 
 abstract class ArcMix(vararg parts: Part) : Mix(*parts) {
 
+    // Draws the Mix onto a Grid
     abstract operator fun invoke(grid: VisualGrid): VisualGrid
+}
+
+abstract class ComputedArcMix(vararg parts: Part) : ArcMix(*parts) {
+
+    // Computes the Mix from a Grid and a starting pixel
+    abstract  fun compute(dot : Dot, grid: VisualGrid)
 }
 
 open class Grid(vararg parts: Part) : Mix(*parts) {
