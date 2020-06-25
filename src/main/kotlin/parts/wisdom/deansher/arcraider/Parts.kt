@@ -1,3 +1,5 @@
+@file:Suppress("PublicApiImplicitType")
+
 package parts.wisdom.deansher.arcraider
 
 import me.joypri.Mix
@@ -37,7 +39,7 @@ interface Shape {
     /**
      * Renders this shape into `grid`.
      */
-    fun render(grid: ArcGrid);
+    fun render(grid: ArcGrid)
 }
 
 class Line(vararg parts: Part) : Shape, Mix(*parts) {
@@ -65,37 +67,32 @@ class Coords(vararg parts: Part) : Mix(*parts) {
 }
 
 interface Transformation {
-    fun transform(generator: GridGenerator, at: Any): GridGenerator;
+    fun transform(generator: GridGenerator, path: List<Role<*>>): GridGenerator
 }
 
-class Lengthen(vararg parts: Part): Transformation, Mix(*parts) {
-    override fun transform(
-        generator: GridGenerator,
-        at: Any
-    ): GridGenerator {
-        val line = at as Line
-        TODO()
+class LengthenLine(vararg parts: Part): Transformation, Mix(*parts) {
+    override fun transform(generator: GridGenerator, path: List<Role<*>>): GridGenerator {
+        return GridGenerator(
+            *generator.parts.toTypedArray()
+        )
     }
 }
 
-class Shorten(vararg parts: Part): Transformation, Mix(*parts) {
-    override fun transform(
-        generator: GridGenerator,
-        at: Any
-    ): GridGenerator {
-        val line = at as Line
-        TODO()
+class ShortenLine(vararg parts: Part): Transformation, Mix(*parts) {
+    override fun transform(generator: GridGenerator, path: List<Role<*>>): GridGenerator {
+        return GridGenerator(
+            *generator.parts.toTypedArray()
+        )
     }
 }
 
-class ChangeBackgroundColor(vararg parts: Part): Transformation, Mix(*parts) {
+class ChangeGeneratorBackgroundColor(vararg parts: Part): Transformation, Mix(*parts) {
     val newColor by NewColor
 
-    override fun transform(
-        generator: GridGenerator,
-        at: Any
-    ): GridGenerator {
-        TODO()
+    override fun transform(generator: GridGenerator, path: List<Role<*>>): GridGenerator {
+        return GridGenerator(
+            *generator.parts.toTypedArray()
+        )
     }
 }
 
