@@ -2,16 +2,19 @@
 
 package parts.wisdom.deansher.arcraider
 
-import me.joypri.Mix
-import me.joypri.Part
-import me.joypri.Role
+import me.joypri.*
 
 object Width : Role<Int>()
 object Height : Role<Int>()
 object TheShape : Role<Shape>()
+object TheShapes : Role<List<Shape>>()
+object Index : Role<Int>()
 object X : Role<Int>()
 object Y : Role<Int>()
 object Length : Role<Int>()
+object Addend : Role<Int>()
+object NewInt : Role<Int>()
+object Steps : Role<Int>()
 
 object Start : Role<Coords>()
 object TheColor : Role<ArcColor>()
@@ -25,14 +28,19 @@ enum class Direction(val dx: Int, val dy: Int) {
     DOWN(0, 1),
     DOWN_LEFT(-1, 1),
     LEFT(-1, 0),
-    UP_LEFT(-1, -1)
+    UP_LEFT(-1, -1);
+
+    fun rotate(steps: Int): Direction {
+        val newOrdinal = (ordinal + steps) % values().size
+        return values()[newOrdinal]
+    }
 }
 
 open class GridGenerator(vararg parts: Part) : Mix(*parts) {
     val width by Width
     val height by Height
     val backgroundColor by BackgroundColor
-    val shape by TheShape
+    val shapes by TheShapes
 }
 
 interface Shape {
@@ -67,34 +75,67 @@ class Coords(vararg parts: Part) : Mix(*parts) {
 }
 
 interface Transformation {
-    fun transform(generator: GridGenerator, path: List<Role<*>>): GridGenerator
+    fun transform(
+        generator: GridGenerator,
+        path1: RolePath,
+        path2: RolePath
+    ): GridGenerator
 }
 
-class LengthenLine(vararg parts: Part): Transformation, Mix(*parts) {
-    override fun transform(generator: GridGenerator, path: List<Role<*>>): GridGenerator {
-        return GridGenerator(
-            *generator.parts.toTypedArray()
-        )
+class InsertConstantShape(vararg parts: Part) : Transformation, Mix(*parts) {
+    val shape by TheShape
+    val index by Index
+
+    override fun transform(
+        generator: GridGenerator,
+        path1: RolePath,
+        path2: RolePath
+    ): GridGenerator = generator.mapAt<GridGenerator, List<Shape>> {shapes ->
+        val index = index.coerceIn(0 .. shapes.size)
+        val prefix = shapes.slice(0 until index)
+        val suffix = shapes.slice(index until shapes.size)
+        prefix + listOf(shape) + suffix
     }
 }
 
-class ShortenLine(vararg parts: Part): Transformation, Mix(*parts) {
-    override fun transform(generator: GridGenerator, path: List<Role<*>>): GridGenerator {
-        return GridGenerator(
-            *generator.parts.toTypedArray()
-        )
-    }
+class AddConstant(vararg parts: Part) : Transformation, Mix(*parts) {
+    val addend by Addend
+
+    override fun transform(
+        generator: GridGenerator,
+        path1: RolePath,
+        path2: RolePath
+    ): GridGenerator = generator.mapAt<GridGenerator, Int>(path1) { it + addend }
 }
 
-class ChangeGeneratorBackgroundColor(vararg parts: Part): Transformation, Mix(*parts) {
+class ReplaceIntWithConstant(vararg parts: Part) : Transformation, Mix(*parts) {
+    val newInt by NewInt
+
+    override fun transform(
+        generator: GridGenerator,
+        path1: RolePath,
+        path2: RolePath
+    ): GridGenerator = generator.mapAt<GridGenerator, Int>(path1) { newInt }
+}
+
+class ReplaceColorWithConstant(vararg parts: Part) : Transformation, Mix(*parts) {
     val newColor by NewColor
-
-    override fun transform(generator: GridGenerator, path: List<Role<*>>): GridGenerator {
-        return GridGenerator(
-            *generator.parts.toTypedArray()
-        )
-    }
+    override fun transform(
+        generator: GridGenerator,
+        path1: RolePath,
+        path2: RolePath
+    ): GridGenerator = generator.mapAt<GridGenerator, ArcColor> { newColor }
 }
+
+class RotateDirection(vararg parts: Part) : Transformation, Mix(*parts) {
+    val steps by Steps
+    override fun transform(
+        generator: GridGenerator,
+        path1: RolePath,
+        path2: RolePath
+    ): GridGenerator = generator.mapAt<GridGenerator, Direction> { it.rotate(steps) }
+}
+
 
 
 
