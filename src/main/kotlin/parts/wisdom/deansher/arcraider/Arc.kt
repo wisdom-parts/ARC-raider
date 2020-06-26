@@ -1,5 +1,6 @@
 package parts.wisdom.deansher.arcraider
 
+import parts.wisdom.arcraider.ArcColor
 import parts.wisdom.arcraider.SerializedGrid
 import parts.wisdom.arcraider.ArcPair as SerializedPair
 import parts.wisdom.arcraider.Task as SerializedTask
@@ -91,31 +92,5 @@ data class ArcTask(
             ArcTask(
                 st.train.map { ArcPair.fromSerialized(it) },
                 st.test.map { ArcPair.fromSerialized(it) })
-    }
-}
-
-enum class ArcColor {
-    BLACK,
-    BLUE,
-    RED,
-    GREEN,
-    YELLOW,
-    GRAY,
-    FUSCHIA,
-    ORANGE,
-    TEAL,
-    CRIMSON;
-
-    companion object {
-        private val intToColor = MutableList(values().size) { BLACK }.apply {
-            for (c in values()) {
-                set(c.ordinal, c)
-            }
-        }
-
-        fun fromInt(i: Int): ArcColor {
-            require(i in 0 until intToColor.size) { "no color for $i" }
-            return intToColor[i]
-        }
     }
 }

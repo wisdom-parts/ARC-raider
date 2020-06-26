@@ -3,6 +3,7 @@
 package parts.wisdom.deansher.arcraider
 
 import me.joypri.*
+import parts.wisdom.arcraider.ArcColor
 
 object Width : Role<Int>()
 object Height : Role<Int>()
