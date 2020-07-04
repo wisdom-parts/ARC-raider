@@ -53,7 +53,7 @@ open class GridGenerator(vararg parts: Part) : Mix(*parts) {
     val shapes by TheShapes
 
     fun generate(): ArcGrid {
-        val grid = ArcGrid(height, width, backgroundColor)
+        val grid = ArcGrid(width, height, backgroundColor)
         for (shape in shapes) {
             shape.render(grid)
         }

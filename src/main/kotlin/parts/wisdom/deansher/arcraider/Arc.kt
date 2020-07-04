@@ -18,8 +18,8 @@ data class ArcGrid(
     /**
      * Construct a `Grid` with all squares the same color.
      */
-    constructor(numRows: Int, numCols: Int, color: ArcColor) :
-            this(numRows, numCols, Array(numRows * numCols) { color })
+    constructor(width: Int, height: Int, color: ArcColor) :
+            this(width, height, Array(height * width) { color })
 
     operator fun get(x: Int, y: Int): ArcColor = data[dataIndex(x, y)]
 
