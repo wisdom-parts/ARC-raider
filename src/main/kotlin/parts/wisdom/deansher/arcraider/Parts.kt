@@ -23,6 +23,11 @@ object NewColor : Role<ArcColor>()
 object BackgroundColor : Role<ArcColor>()
 object TheDirection : Role<Direction>()
 
+object ThePathFinder : Role<PathFinder>()
+object PathFinder1 : Role<PathFinder>()
+object PathFinder2 : Role<PathFinder>()
+object ThePathTransformation : Role<PathTransformation>()
+
 enum class Direction(val dx: Int, val dy: Int) {
     RIGHT(1, 0),
     DOWN_RIGHT(1, 1),
@@ -31,8 +36,8 @@ enum class Direction(val dx: Int, val dy: Int) {
     LEFT(-1, 0),
     UP_LEFT(-1, -1);
 
-    fun rotate(steps: Int): Direction {
-        val newOrdinal = (ordinal + steps) % values().size
+    fun rotateClockwise45NDegrees(n: Int): Direction {
+        val newOrdinal = (ordinal + n) % values().size
         return values()[newOrdinal]
     }
 }
@@ -41,7 +46,17 @@ open class GridGenerator(vararg parts: Part) : Mix(*parts) {
     val width by Width
     val height by Height
     val backgroundColor by BackgroundColor
+
+    // shapes listed bottom to top
     val shapes by TheShapes
+
+    fun generate(): ArcGrid {
+        val grid = ArcGrid(height, width, backgroundColor)
+        for (shape in shapes) {
+            shape.render(grid)
+        }
+        return grid
+    }
 }
 
 interface Shape {
@@ -76,65 +91,153 @@ class Coords(vararg parts: Part) : Mix(*parts) {
 }
 
 interface Transformation {
+    fun transform(generator: GridGenerator): GridGenerator
+}
+
+interface PathFinder {
+    fun findPath(from: Mix): RolePath<*>
+}
+
+class PathFinderTransformation(vararg parts: Part) : Transformation, Mix(*parts) {
+    val pathFinder by ThePathFinder
+    val pathTransformation by ThePathTransformation
+
+    override fun transform(generator: GridGenerator): GridGenerator =
+        pathTransformation.transform(generator, pathFinder.findPath(generator))
+}
+
+class BottomShapeOfGenerator(vararg parts: Part) : PathFinder, Mix(*parts) {
+    override fun findPath(from: Mix): RolePath<*> {
+        require(from is GridGenerator)
+        return TheShapes[0]
+    }
+}
+
+class LengthPath(vararg parts: Part) : PathFinder, Mix(*parts) {
+    override fun findPath(from: Mix): RolePath<*> {
+        return RolePath(Length)
+    }
+}
+
+class TheColorPath(vararg parts: Part) : PathFinder, Mix(*parts) {
+    override fun findPath(from: Mix): RolePath<*> {
+        return RolePath(TheColor)
+    }
+}
+
+class StartXPath(vararg parts: Part) : PathFinder, Mix(*parts) {
+    override fun findPath(from: Mix): RolePath<*> {
+        return Start + X
+    }
+}
+
+class StartYPath(vararg parts: Part) : PathFinder, Mix(*parts) {
+    override fun findPath(from: Mix): RolePath<*> {
+        return Start + Y
+    }
+}
+
+class TheDirectionPath(vararg parts: Part) : PathFinder, Mix(*parts) {
+    override fun findPath(from: Mix): RolePath<*> {
+        return RolePath(TheDirection)
+    }
+}
+
+class ComposePathFinders(vararg parts: Part) : PathFinder, Mix(*parts) {
+    val pathFinder1 by PathFinder1
+    val pathFinder2 by PathFinder2
+
+    @Suppress("UNCHECKED_CAST")
+    override fun findPath(from: Mix): RolePath<*> {
+        val path1 = pathFinder1.findPath(from) as RolePath<Mix>
+        val mixAtPath1 = from[path1]
+        check(mixAtPath1 != null)
+        return path1 + pathFinder2.findPath(mixAtPath1)
+    }
+}
+
+interface PathTransformation {
     fun transform(
         generator: GridGenerator,
-        path1: RolePath,
-        path2: RolePath
+        targetPath: RolePath<*>
     ): GridGenerator
 }
 
-class InsertConstantShape(vararg parts: Part) : Transformation, Mix(*parts) {
+/**
+ * Inserts a constant `shape` at a constant `index` in a required `List<Shape>` at `targetPath`.
+ * First, coerces `index` into the range `0 .. shapes.size`.
+ */
+class InsertConstantShape(vararg parts: Part) : PathTransformation, Mix(*parts) {
     val shape by TheShape
     val index by Index
 
+    @Suppress("UNCHECKED_CAST")
     override fun transform(
         generator: GridGenerator,
-        path1: RolePath,
-        path2: RolePath
-    ): GridGenerator = generator.mapAt<GridGenerator, List<Shape>> {shapes ->
-        val index = index.coerceIn(0 .. shapes.size)
+        targetPath: RolePath<*>
+    ): GridGenerator = generator.mapAt(
+        targetPath as RolePath<List<Shape>>
+    ) { shapes ->
+        val index = index.coerceIn(0..shapes.size)
         val prefix = shapes.slice(0 until index)
         val suffix = shapes.slice(index until shapes.size)
         prefix + listOf(shape) + suffix
     }
 }
 
-class AddConstant(vararg parts: Part) : Transformation, Mix(*parts) {
+/**
+ * Adds a constant `addend` to a required `Int` at `targetPath`.
+ */
+class AddConstant(vararg parts: Part) : PathTransformation, Mix(*parts) {
     val addend by Addend
 
+    @Suppress("UNCHECKED_CAST")
     override fun transform(
         generator: GridGenerator,
-        path1: RolePath,
-        path2: RolePath
-    ): GridGenerator = generator.mapAt<GridGenerator, Int>(path1) { it + addend }
+        targetPath: RolePath<*>
+    ): GridGenerator = generator.mapAt(targetPath as RolePath<Int>) { it + addend }
 }
 
-class ReplaceIntWithConstant(vararg parts: Part) : Transformation, Mix(*parts) {
+/**
+ * Replaces a required `Int` at `targetPath` with a constant `newInt`.
+ */
+class ReplaceIntWithConstant(vararg parts: Part) : PathTransformation, Mix(*parts) {
     val newInt by NewInt
 
+    @Suppress("UNCHECKED_CAST")
     override fun transform(
         generator: GridGenerator,
-        path1: RolePath,
-        path2: RolePath
-    ): GridGenerator = generator.mapAt<GridGenerator, Int>(path1) { newInt }
+        targetPath: RolePath<*>
+    ): GridGenerator = generator.mapAt(
+        targetPath as RolePath<Int>
+    ) { newInt }
 }
 
-class ReplaceColorWithConstant(vararg parts: Part) : Transformation, Mix(*parts) {
+/**
+ * Replaces a required `ArcColor` at `targetPath` with a constant `newColor`.
+ */
+class ReplaceArcColorWithConstant(vararg parts: Part) : PathTransformation, Mix(*parts) {
     val newColor by NewColor
+
+    @Suppress("UNCHECKED_CAST")
     override fun transform(
         generator: GridGenerator,
-        path1: RolePath,
-        path2: RolePath
-    ): GridGenerator = generator.mapAt<GridGenerator, ArcColor> { newColor }
+        targetPath: RolePath<*>
+    ): GridGenerator = generator.mapAt(
+        targetPath as RolePath<ArcColor>
+    ) { newColor }
 }
 
-class RotateDirection(vararg parts: Part) : Transformation, Mix(*parts) {
+class RotateDirectionClockwise45NDegrees(vararg parts: Part) : PathTransformation, Mix(*parts) {
     val steps by Steps
+
+    @Suppress("UNCHECKED_CAST")
     override fun transform(
         generator: GridGenerator,
-        path1: RolePath,
-        path2: RolePath
-    ): GridGenerator = generator.mapAt<GridGenerator, Direction> { it.rotate(steps) }
+        targetPath: RolePath<*>
+    ): GridGenerator = generator.mapAt(
+        targetPath as RolePath<Direction>
+    ) { it.rotateClockwise45NDegrees(steps) }
 }
 
 
