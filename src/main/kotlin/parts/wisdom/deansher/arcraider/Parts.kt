@@ -5,11 +5,14 @@ package parts.wisdom.deansher.arcraider
 import me.joypri.*
 import parts.wisdom.arcraider.ArcColor
 
+object NewGenerator : Role<GridGenerator>()
 object Width : Role<Int>()
 object Height : Role<Int>()
-object TheShape : Role<Shape>()
+object BackgroundColor : Role<ArcColor>()
 object TheShapes : Role<List<Shape>>()
 object Index : Role<Int>()
+
+object TheShape : Role<Shape>()
 object X : Role<Int>()
 object Y : Role<Int>()
 object Length : Role<Int>()
@@ -20,7 +23,6 @@ object Steps : Role<Int>()
 object Start : Role<Coords>()
 object TheColor : Role<ArcColor>()
 object NewColor : Role<ArcColor>()
-object BackgroundColor : Role<ArcColor>()
 object TheDirection : Role<Direction>()
 
 object ThePathFinder : Role<PathFinder>()
@@ -106,22 +108,21 @@ class PathFinderTransformation(vararg parts: Part) : Transformation, Mix(*parts)
         pathTransformation.transform(generator, pathFinder.findPath(generator))
 }
 
-class BottomShapeOfGenerator(vararg parts: Part) : PathFinder, Mix(*parts) {
+class TheShapesZeroPath(vararg parts: Part) : PathFinder, Mix(*parts) {
     override fun findPath(from: Mix): RolePath<*> {
-        require(from is GridGenerator)
         return TheShapes[0]
     }
 }
 
 class LengthPath(vararg parts: Part) : PathFinder, Mix(*parts) {
     override fun findPath(from: Mix): RolePath<*> {
-        return RolePath(Length)
+        return Length.toPath()
     }
 }
 
 class TheColorPath(vararg parts: Part) : PathFinder, Mix(*parts) {
     override fun findPath(from: Mix): RolePath<*> {
-        return RolePath(TheColor)
+        return TheColor.toPath()
     }
 }
 
@@ -139,7 +140,7 @@ class StartYPath(vararg parts: Part) : PathFinder, Mix(*parts) {
 
 class TheDirectionPath(vararg parts: Part) : PathFinder, Mix(*parts) {
     override fun findPath(from: Mix): RolePath<*> {
-        return RolePath(TheDirection)
+        return TheDirection.toPath()
     }
 }
 
@@ -161,6 +162,18 @@ interface PathTransformation {
         generator: GridGenerator,
         targetPath: RolePath<*>
     ): GridGenerator
+}
+
+/**
+ * Replaces the generator entirely.
+ */
+class ReplaceGeneratorWithConstant(vararg parts: Part) : Transformation, Mix(*parts) {
+    val newGenerator by NewGenerator
+
+    @Suppress("UNCHECKED_CAST")
+    override fun transform(
+        generator: GridGenerator
+    ): GridGenerator = newGenerator
 }
 
 /**
