@@ -16,7 +16,7 @@ data class ArcGrid(
     private val data: Array<ArcColor>
 ) {
     /**
-     * Construct a `Grid` with all squares the same color.
+     * Construct an `ArcGrid` with all squares the same color.
      */
     constructor(width: Int, height: Int, color: ArcColor) :
             this(width, height, Array(height * width) { color })
@@ -55,7 +55,7 @@ data class ArcGrid(
 
     companion object {
         fun fromSerialized(sg: SerializedGrid): ArcGrid {
-            val width = sg.map { it.size }.max() ?: 1
+            val width = sg.map { it.size }.max() ?: 0
             val height = sg.size
             val ag = ArcGrid(width, height, ArcColor.BLACK)
             for (x in 0 until width) {
@@ -63,6 +63,22 @@ data class ArcGrid(
                     ag[x, y] = ArcColor.fromInt(
                         sg[y].getOrElse(x) { 0 }
                     )
+                }
+            }
+            return ag
+        }
+
+        /**
+         * For hand-written example grids: Each string is a row, where each character represents
+         * a color as mapped in `ArcColor.fromChar(c)`.
+         */
+        fun fromText(vararg rows: String): ArcGrid {
+            val width = rows.map { it.length }.max() ?: 0
+            val height = rows.size
+            val ag = ArcGrid(width, height, ArcColor.BLACK)
+            rows.forEachIndexed { y, row ->
+                row.forEachIndexed { x, ch ->
+                    ag[x, y] = ArcColor.fromChar(ch)
                 }
             }
             return ag

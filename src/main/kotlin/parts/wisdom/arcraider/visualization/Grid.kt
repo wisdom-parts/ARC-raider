@@ -36,7 +36,7 @@ fun getColor(colorIndex: Int): Color =
         ArcColor.GREEN -> Color.GREEN
         ArcColor.YELLOW -> Color.YELLOW
         ArcColor.GRAY -> Color.GRAY
-        ArcColor.FUSCHIA -> Color(0xF012BE)
+        ArcColor.FUCHSIA -> Color(0xC154C1)
         ArcColor.ORANGE -> Color.ORANGE
         ArcColor.TEAL -> Color(0x7FDBFF)
         ArcColor.CRIMSON -> Color(0x870C25)
