@@ -24,13 +24,11 @@ class PartsTest {
             )
         )
         assertEquals(
-            ArcGrid.fromText(
-                "aaaaa",
-                "araaa",
-                "aaraa",
-                "aaaaa"
-            ),
-            genGridWithOneLine.generate()
+            """ |aaaaa
+                |araaa
+                |aaraa
+                |aaaaa""".trimMargin(),
+            genGridWithOneLine.generate().toString()
         )
     }
 }

@@ -1,7 +1,6 @@
 package parts.wisdom.arcraider
 
 import me.joypri.Role
-import java.lang.IllegalArgumentException
 
 object Width : Role<Int>()
 object Height : Role<Int>()
@@ -30,6 +29,20 @@ enum class ArcColor {
     TEAL,
     CRIMSON;
 
+    fun toChar(): Char =
+        when(this) {
+            BLACK -> '.'
+            BLUE -> 'b'
+            RED -> 'r'
+            GREEN -> 'g'
+            YELLOW -> 'y'
+            GRAY -> 'a'
+            FUCHSIA -> 'f'
+            ORANGE -> 'o'
+            TEAL -> 't'
+            CRIMSON -> 'c'
+        }
+
     companion object {
         private val intToColor = List(values().size) { values()[it] }
 
@@ -38,20 +51,15 @@ enum class ArcColor {
             return intToColor[i]
         }
 
-        fun fromChar(ch: Char): ArcColor =
-            when(ch) {
-                '.' -> BLACK
-                'b' -> BLUE
-                'r' -> RED
-                'g' -> GREEN
-                'y' -> YELLOW
-                'a' -> GRAY
-                'f' -> FUCHSIA
-                'o' -> ORANGE
-                't' -> TEAL
-                'c' -> CRIMSON
-                else -> throw IllegalArgumentException("Unknown character code `$ch`")
+        private val charToColor = values().associateBy { it.toChar() }
+
+        fun fromChar(ch: Char): ArcColor {
+            val result = charToColor[ch]
+            require (result != null) {
+                "unknown color character code '$ch'"
             }
+            return result
+        }
     }
 }
 

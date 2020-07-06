@@ -33,6 +33,16 @@ data class ArcGrid(
         return y * width + x
     }
 
+    override fun toString(): String {
+        val rows = (0 until height).map { y ->
+            data.slice((y*width) until ((y+1)*width))
+        }
+        val rowStrings = rows.map { row ->
+            row.map { it.toChar() }.joinToString("")
+        }
+        return rowStrings.joinToString("\n")
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -69,10 +79,12 @@ data class ArcGrid(
         }
 
         /**
-         * For hand-written example grids: Each string is a row, where each character represents
+         * For hand-written example grids: Each line of text is a row, where each character represents
          * a color as mapped in `ArcColor.fromChar(c)`.
          */
-        fun fromText(vararg rows: String): ArcGrid {
+        // TODO: write a test for this.
+        fun fromText(text: String): ArcGrid {
+            val rows = text.split('\n')
             val width = rows.map { it.length }.max() ?: 0
             val height = rows.size
             val ag = ArcGrid(width, height, ArcColor.BLACK)
