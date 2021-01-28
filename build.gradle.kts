@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.3.72"
+    kotlin("jvm") version "1.4.21"
     kotlin("plugin.serialization") version "1.3.70"
 
 }
@@ -10,7 +10,6 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0")
     implementation("org.joy.prime:joy-data-kotlin:0.0.1")
     implementation("parts.wisdom.djlkotlin:api:0.0.1")
@@ -29,4 +28,4 @@ tasks.test {
 
 val compileKotlin: org.jetbrains.kotlin.gradle.tasks.KotlinCompile by tasks
 
-compileKotlin.kotlinOptions.jvmTarget = "1.8"
+compileKotlin.kotlinOptions.jvmTarget = "15"
