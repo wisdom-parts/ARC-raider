@@ -1,6 +1,6 @@
 plugins {
     kotlin("jvm") version "1.4.21"
-    kotlin("plugin.serialization") version "1.3.70"
+    kotlin("plugin.serialization") version "1.4.21"
 
 }
 
@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
     implementation("org.joy.prime:joy-data-kotlin:0.0.1")
     implementation("parts.wisdom.djlkotlin:api:0.0.1")
     implementation("parts.wisdom.djlkotlin:basicdataset:0.0.1")
