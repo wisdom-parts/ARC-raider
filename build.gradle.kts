@@ -10,7 +10,7 @@ repositories {
 
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
-    implementation("org.joy.prime:joy-data-kotlin:0.0.1")
+    implementation("me.joypri:joy-data-kotlin:0.0.1")
     implementation("parts.wisdom.djlkotlin:api:0.0.1")
     implementation("parts.wisdom.djlkotlin:basicdataset:0.0.1")
     implementation("parts.wisdom.djlkotlin:model-zoo:0.0.1")
