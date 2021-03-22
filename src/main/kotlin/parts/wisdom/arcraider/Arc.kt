@@ -28,6 +28,11 @@ data class ArcGrid(
     /** Stores `(x, y)` at `y * width + x` */
     private val data: Array<ArcColor>
 ) {
+    val toSerialized: SerializedGrid
+        get() = (0 until height).map { y ->
+            (0 until width).map { x -> data[y * width + x].ordinal }
+        }
+
     /**
      * Construct an `ArcGrid` with all squares the same color.
      */
@@ -140,8 +145,13 @@ fun loadTasksFromDir(dir: File): List<SerializedTask> {
     TODO()
 }
 
-fun loadTaskFromFile(file: File): SerializedTask {
-    return Json.decodeFromString(SerializedTask.serializer(), file.readText())
+fun loadTaskFromFile(file: File): ArcTask {
+    return ArcTask.fromSerialized(
+        Json.decodeFromString(
+            SerializedTask.serializer(),
+            file.readText()
+        )
+    )
 }
 
 fun loadTaskFromString(taskJson: String): SerializedTask {

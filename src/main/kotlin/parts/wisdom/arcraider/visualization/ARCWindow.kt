@@ -1,7 +1,7 @@
 package parts.wisdom.arcraider.visualization
 
 import parts.wisdom.arcraider.SerializedGrid
-import parts.wisdom.arcraider.Task
+import parts.wisdom.arcraider.ArcTask
 import parts.wisdom.arcraider.loadTaskFromFile
 import java.awt.BorderLayout
 import java.awt.Dimension
@@ -18,7 +18,7 @@ private const val GRID_SIZE_PX = 400
 
 typealias TaskGrids = List<Pair<GridPane, GridPane>>
 
-class ARCWindow(title: String, task: Task) : JFrame() {
+class ARCWindow(title: String, task: ArcTask) : JFrame() {
 
     private var taskType = TaskType.TRAIN
     private val content = JPanel()
@@ -27,7 +27,7 @@ class ARCWindow(title: String, task: Task) : JFrame() {
         createUI(title, task)
     }
 
-    private fun createUI(title: String, task: Task) {
+    private fun createUI(title: String, task: ArcTask) {
         setTitle(title)
         defaultCloseOperation = EXIT_ON_CLOSE
         setLocationRelativeTo(null)
@@ -53,7 +53,7 @@ class ARCWindow(title: String, task: Task) : JFrame() {
         pack()
     }
 
-    private fun renderTask(task: Task) {
+    private fun renderTask(task: ArcTask) {
         content.apply {
             add(Box.createRigidArea(Dimension(0, GAP_SIZE_PX)))
             add(
@@ -88,7 +88,7 @@ class ARCWindow(title: String, task: Task) : JFrame() {
         }
     }
 
-    private fun refresh(task: Task) {
+    private fun refresh(task: ArcTask) {
         content.removeAll()
         renderTask(task)
         content.revalidate()
@@ -106,7 +106,7 @@ class ARCWindow(title: String, task: Task) : JFrame() {
                 add(Box.createRigidArea(Dimension(GAP_SIZE_PX, 0)))
             }
 
-    private fun createToggle(task: Task, taskType: TaskType): JToggleButton {
+    private fun createToggle(task: ArcTask, taskType: TaskType): JToggleButton {
         return JToggleButton(taskType.label, this.taskType == taskType).apply {
             addActionListener {
                 if (this@ARCWindow.taskType != taskType) {
@@ -120,7 +120,7 @@ class ARCWindow(title: String, task: Task) : JFrame() {
         }
     }
 
-    private fun createFromTask(task: Task): TaskGrids {
+    private fun createFromTask(task: ArcTask): TaskGrids {
         fun gridPane(serializedGrid: SerializedGrid, isOutput: Boolean): GridPane {
             val grid = Grid(serializedGrid)
             return GridPane(grid, isOutput).apply {
@@ -136,7 +136,7 @@ class ARCWindow(title: String, task: Task) : JFrame() {
             TaskType.TRAIN -> task.train
         }
         return arcPairs.map { (input, output) ->
-            gridPane(input, false) to gridPane(output, true)
+            gridPane(input.toSerialized, false) to gridPane(output.toSerialized, true)
         }
     }
 }
