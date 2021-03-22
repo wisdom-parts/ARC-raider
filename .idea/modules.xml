@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/827828146/djl-kotlin.iml" filepath="$PROJECT_DIR$/.idea/modules/827828146/djl-kotlin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-458847289/djl-kotlin.basicdataset.iml" filepath="$PROJECT_DIR$/.idea/modules/-458847289/djl-kotlin.basicdataset.iml" />
+    </modules>
+  </component>
+</project>

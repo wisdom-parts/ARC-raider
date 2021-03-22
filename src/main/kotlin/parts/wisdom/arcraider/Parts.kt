@@ -4,31 +4,36 @@ package parts.wisdom.deansher.arcraider
 
 import me.joypri.*
 import parts.wisdom.arcraider.ArcColor
+import parts.wisdom.arcraider.ArcGrid
 
-object NewGenerator : Role<GridGenerator>()
-object Width : Role<Int>()
-object Height : Role<Int>()
-object BackgroundColor : Role<ArcColor>()
-object TheShapes : Role<List<Shape>>()
-object Index : Role<Int>()
+open class ShapeRole : ClassRole<Shape>(Shape::class)
+open class ArcColorRole : ClassRole<ArcColor>(ArcColor::class)
+open class PathFinderRole : ClassRole<PathFinder>(PathFinder::class)
 
-object TheShape : Role<Shape>()
-object X : Role<Int>()
-object Y : Role<Int>()
-object Length : Role<Int>()
-object Addend : Role<Int>()
-object NewInt : Role<Int>()
-object Steps : Role<Int>()
+object NewGenerator : ClassRole<GridGenerator>(GridGenerator::class)
+object Width : IntRole()
+object Height : IntRole()
+object BackgroundColor : ArcColorRole()
+object TheShapes : ListRole<Shape>(Shape::class)
+object Index : IntRole()
 
-object Start : Role<Coords>()
-object TheColor : Role<ArcColor>()
-object NewColor : Role<ArcColor>()
-object TheDirection : Role<Direction>()
+object TheShape : ShapeRole()
+object X : IntRole()
+object Y : IntRole()
+object Length : IntRole()
+object Addend : IntRole()
+object NewInt : IntRole()
+object Steps : IntRole()
 
-object ThePathFinder : Role<PathFinder>()
-object PathFinder1 : Role<PathFinder>()
-object PathFinder2 : Role<PathFinder>()
-object ThePathTransformation : Role<PathTransformation>()
+object Start : ClassRole<Coords>(Coords::class)
+object TheColor : ArcColorRole()
+object NewColor : ArcColorRole()
+object TheDirection : ClassRole<Direction>(Direction::class)
+
+object ThePathFinder : PathFinderRole()
+object PathFinder1 : PathFinderRole()
+object PathFinder2 : PathFinderRole()
+object ThePathTransformation : ClassRole<PathTransformation>(PathTransformation::class)
 
 enum class Direction(val dx: Int, val dy: Int) {
     RIGHT(1, 0),

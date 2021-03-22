@@ -1,2 +1,2 @@
 includeBuild("../joy-data-kotlin")
-includeBuild("../djl-kotlin")
+includeBuild("../wisdom-kotlin")

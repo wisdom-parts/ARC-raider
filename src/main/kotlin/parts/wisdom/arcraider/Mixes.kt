@@ -1,3 +1,5 @@
+@file:Suppress("PublicApiImplicitType")
+
 package parts.wisdom.arcraider
 
 import me.joypri.Mix

@@ -4,17 +4,18 @@ plugins {
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
     jcenter()
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
     implementation("me.joypri:joy-data-kotlin:0.0.1")
-    implementation("parts.wisdom.djlkotlin:api:0.0.1")
-    implementation("parts.wisdom.djlkotlin:basicdataset:0.0.1")
-    implementation("parts.wisdom.djlkotlin:model-zoo:0.0.1")
-    implementation("org.slf4j:slf4j-simple:1.7.30")
+    implementation("parts.wisdom:wisdom-kotlin:0.0.1")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
+
+    implementation("org.tensorflow:tensorflow-framework:0.3.0-SNAPSHOT")
     testImplementation("org.junit.jupiter:junit-jupiter:5.6.2")
 }
 

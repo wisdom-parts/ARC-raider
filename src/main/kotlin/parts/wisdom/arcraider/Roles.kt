@@ -1,21 +1,23 @@
 package parts.wisdom.arcraider
 
+import me.joypri.ClassRole
+import me.joypri.IntRole
 import me.joypri.Role
 
-object Width : Role<Int>()
-object Height : Role<Int>()
-object X : Role<Int>()
-object Y : Role<Int>()
-object Length : Role<Int>()
-object Extension : Role<Int>()
+object Width : IntRole()
+object Height : IntRole()
+object X : IntRole()
+object Y : IntRole()
+object Length : IntRole()
+object Extension : IntRole()
 
-object Shape : Role<ArcMix>()
-object Start : Role<Coords>()
-object TheColor : Role<ArcColor>()
-object TheCoordsDelta : Role<CoordsDelta>()
-object TheDirection : Role<Direction>()
-object TheGrid : Role<Grid>()
-object TheLine : Role<Line>()
+object Shape : ClassRole<ArcMix>(ArcMix::class)
+object Start : ClassRole<Coords>(Coords::class)
+object TheColor : ClassRole<ArcColor>(ArcColor::class)
+object TheCoordsDelta : ClassRole<CoordsDelta>(CoordsDelta::class)
+object TheDirection : ClassRole<Direction>(Direction::class)
+object TheGrid : ClassRole<Grid>(Grid::class)
+object TheLine : ClassRole<Line>(Line::class)
 
 enum class ArcColor {
     BLACK,
