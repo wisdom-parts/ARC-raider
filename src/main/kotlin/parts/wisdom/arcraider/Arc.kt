@@ -4,6 +4,9 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.io.File
 
+/**
+ * Represents a grid as a list of rows of `ArcColor` ordinals.
+ */
 typealias SerializedGrid = List<List<Int>>
 
 @Serializable

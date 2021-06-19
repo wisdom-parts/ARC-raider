@@ -10,23 +10,19 @@ import java.io.File
 class ArcTest {
     @Test
     fun `load Task from file`() {
-        val resource =
+        val json =
             this::class.java.classLoader.getResource("extend_right.json")
                 ?: fail("missing test resource")
-        val task = loadTaskFromFile(File(resource.toURI()))
-        for (pair in task.test + task.train) {
-            assertEquals(pair.input.size, 4)
-            assertEquals(pair.output.size, 4)
-            for (row in 0..3) {
-                if (row == 1) {
-                    assertEquals(pair.input.get(row), listOf(0, 1, 0, 0))
-                    assertEquals(pair.output.get(row), listOf(0, 1, 1, 0))
-                } else {
-                    for (grid in listOf(pair.input, pair.output)) {
-                        assertEquals(grid.get(row), listOf(0, 0, 0, 0))
-                    }
-                }
-            }
+        val task = loadTaskFromFile(File(json.toURI()))
+        for (pair in task.train + task.test) {
+            assertEquals(pair.input.width, 5)
+            assertEquals(pair.input.height, 4)
+            assertEquals(pair.output.width, 5)
+            assertEquals(pair.output.height, 4)
         }
+        assertEquals(task.train[0].input[0, 0], ArcColor.BLACK)
+        assertEquals(task.train[0].input[1, 1], ArcColor.BLUE)
+        assertEquals(task.train[0].output[2, 1], ArcColor.BLUE)
+        assertEquals(task.test[0].input[0, 1], ArcColor.BLUE)
     }
 }

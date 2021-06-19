@@ -1,6 +1,6 @@
 plugins {
-    kotlin("jvm") version "1.4.21"
-    kotlin("plugin.serialization") version "1.4.21"
+    kotlin("jvm") version "1.5.10"
+    kotlin("plugin.serialization") version "1.5.10"
 }
 
 repositories {
@@ -15,7 +15,6 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
 
-    implementation("org.tensorflow:tensorflow-framework:0.3.0-SNAPSHOT")
     testImplementation("org.junit.jupiter:junit-jupiter:5.6.2")
 }
 
@@ -25,7 +24,7 @@ tasks.test {
 		events("passed", "skipped", "failed")
 	}
 }
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions.jvmTarget = "15"
-}
+//
+//tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+//    kotlinOptions.jvmTarget = "15"
+//}
