@@ -1,26 +1,34 @@
-@file:Suppress("PublicApiImplicitType")
+@file:Suppress("PublicApiImplicitType", "MemberVisibilityCanBePrivate", "unused")
 
-package parts.wisdom.deansher.arcraider
+package parts.wisdom.arcraider
 
 import me.joypri.*
-import parts.wisdom.arcraider.ArcColor
-import parts.wisdom.arcraider.ArcGrid
+import java.lang.IllegalArgumentException
+
+object Width : IntRole()
+object Height : IntRole()
+object X : IntRole()
+object Y : IntRole()
+object Length : IntRole()
+object Extension : IntRole()
+
+object TheCoordsDelta : ClassRole<CoordsDelta>(CoordsDelta::class)
+object DX : IntRole()
+object DY : IntRole()
+
+object TheGrid : ClassRole<GridDimensions>(GridDimensions::class)
+object TheLine : ClassRole<Line>(Line::class)
 
 open class ShapeRole : ClassRole<Shape>(Shape::class)
 open class ArcColorRole : ClassRole<ArcColor>(ArcColor::class)
 open class PathFinderRole : ClassRole<PathFinder>(PathFinder::class)
 
 object NewGenerator : ClassRole<GridGenerator>(GridGenerator::class)
-object Width : IntRole()
-object Height : IntRole()
 object BackgroundColor : ArcColorRole()
 object TheShapes : ListRole<Shape>(Shape::class)
 object Index : IntRole()
 
 object TheShape : ShapeRole()
-object X : IntRole()
-object Y : IntRole()
-object Length : IntRole()
 object Addend : IntRole()
 object NewInt : IntRole()
 object Steps : IntRole()
@@ -35,20 +43,6 @@ object PathFinder1 : PathFinderRole()
 object PathFinder2 : PathFinderRole()
 object ThePathTransformation : ClassRole<PathTransformation>(PathTransformation::class)
 
-enum class Direction(val dx: Int, val dy: Int) {
-    RIGHT(1, 0),
-    DOWN_RIGHT(1, 1),
-    DOWN(0, 1),
-    DOWN_LEFT(-1, 1),
-    LEFT(-1, 0),
-    UP_LEFT(-1, -1);
-
-    fun rotateClockwise45NDegrees(n: Int): Direction {
-        val newOrdinal = (ordinal + n) % values().size
-        return values()[newOrdinal]
-    }
-}
-
 open class GridGenerator(vararg parts: Part) : Mix(*parts) {
     val width by Width
     val height by Height
@@ -60,7 +54,7 @@ open class GridGenerator(vararg parts: Part) : Mix(*parts) {
     fun generate(): ArcGrid {
         val grid = ArcGrid(width, height, backgroundColor)
         for (shape in shapes) {
-            shape.render(grid)
+            shape.draw(grid)
         }
         return grid
     }
@@ -70,31 +64,7 @@ interface Shape {
     /**
      * Renders this shape into `grid`.
      */
-    fun render(grid: ArcGrid)
-}
-
-class Line(vararg parts: Part) : Shape, Mix(*parts) {
-    val color by TheColor
-    val start by Start
-    val direction by TheDirection
-    val length by Length
-
-    override fun render(grid: ArcGrid) {
-        for (i in 0 until length) {
-            val x = start.x + i * direction.dx
-            val y = start.y + i * direction.dy
-            if (x in 0 until grid.width &&
-                y in 0 until grid.height
-            ) {
-                grid[x, y] = color
-            }
-        }
-    }
-}
-
-class Coords(vararg parts: Part) : Mix(*parts) {
-    val x by X
-    val y by Y
+    fun draw(grid: ArcGrid)
 }
 
 interface Transformation {
@@ -258,6 +228,104 @@ class RotateDirectionClockwise45NDegrees(vararg parts: Part) : PathTransformatio
     ) { it.rotateClockwise45NDegrees(steps) }
 }
 
+abstract class GridDrawingMix(vararg parts: Part) : Mix(*parts) {
+
+    abstract fun draw(grid: ArcGrid)
+}
+
+open class GridDimensions(vararg parts: Part) : Mix(*parts) {
+    val width by Width
+    val height by Height
+}
+
+open class Coords(vararg parts: Part) : Mix(*parts) {
+    val x by X
+    val y by Y
+
+    operator fun component1() = x
+    operator fun component2() = y
+
+    operator fun plus(offset: Offset) =
+        Coords(X of x + offset.dx, Y of y + offset.dy)
+}
+
+operator fun ArcGrid.set(coords: Coords, color: ArcColor) {
+    this[coords.x, coords.y] = color
+}
+
+open class CoordsDelta(vararg parts: Part) : Mix(*parts) {
+    val dx by DX
+    val dy by DY
+
+    operator fun component1() = dx
+    operator fun component2() = dy
+}
+
+operator fun Coords.plus(delta: CoordsDelta): Coords =
+    Coords(
+        X of x + delta.dx,
+        Y of y + delta.dy
+    )
+
+open class Dot(vararg parts: Part) : GridDrawingMix(*parts) {
+    val start by Start
+    val color by TheColor
+
+    override fun draw(grid: ArcGrid) {
+        grid[start] = color
+    }
+}
+
+open class Line(vararg parts: Part) : GridDrawingMix(*parts), Shape {
+    val start by Start
+    val color by TheColor
+    val direction by TheDirection
+    val length by Length
+
+    init {
+        if (length <= 0) throw IllegalArgumentException("Line must have a positive length!")
+    }
+
+    override fun draw(grid: ArcGrid) {
+        for (delta in 0.until(length)) {
+            grid[start + direction * delta] = color
+        }
+    }
+}
+
+abstract class LineTransformation(vararg parts: Part) : Mix(*parts) {
+
+    abstract fun transform(line: Line): Line
+}
+
+open class ExtendLine(vararg parts: Part) : LineTransformation(*parts) {
+    val extension by Extension
+
+    override fun transform(line: Line): Line {
+        return Line(
+            TheColor of line.color,
+            TheDirection of line.direction,
+            Start of line.start,
+            Length of line.length + extension
+        )
+    }
+}
+
+open class MoveLine(vararg parts: Part) : LineTransformation(*parts) {
+    val coordsDelta by TheCoordsDelta
+
+    override fun transform(line: Line): Line {
+        return Line(
+            TheColor of line.color,
+            TheDirection of line.direction,
+            Start of Coords(
+                X of line.start.x + coordsDelta.dx,
+                Y of line.start.y + coordsDelta.dy
+            ),
+            Length of line.length
+        )
+    }
+}
 
 
 

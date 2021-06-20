@@ -122,7 +122,7 @@ class ARCWindow(title: String, task: ArcTask) : JFrame() {
 
     private fun createFromTask(task: ArcTask): TaskGrids {
         fun gridPane(serializedGrid: SerializedGrid, isOutput: Boolean): GridPane {
-            val grid = Grid(serializedGrid)
+            val grid = VisualGrid(serializedGrid)
             return GridPane(grid, isOutput).apply {
                 val largerDimen = max(grid.widthSquares, grid.heightSquares)
                 val height = (GRID_SIZE_PX / largerDimen) * grid.heightSquares

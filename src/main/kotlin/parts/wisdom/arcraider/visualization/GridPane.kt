@@ -9,7 +9,7 @@ import kotlin.math.min
 // we don't fill right to the edge of the screen.
 private const val PANEL_INSET_PIXELS = 10
 
-class GridPane(private var grid: Grid, private val isOutput: Boolean = false) : JPanel() {
+class GridPane(private var grid: VisualGrid, private val isOutput: Boolean = false) : JPanel() {
 
     override fun paintComponent(g: Graphics) {
         super.paintComponent(g)

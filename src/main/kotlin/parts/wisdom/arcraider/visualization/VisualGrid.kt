@@ -6,7 +6,8 @@ import java.awt.Color
 
 data class Square(val x: Int, val y: Int, val color: Int)
 
-data class Grid(
+// TODO: Refactor the GUI to use `ArcGrid`.
+data class VisualGrid(
     val widthSquares: Int,
     val heightSquares: Int,
     val squares: List<Square>

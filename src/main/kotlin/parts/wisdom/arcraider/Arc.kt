@@ -21,8 +21,54 @@ data class SerializedPair(
     val output: SerializedGrid
 )
 
+enum class ArcColor {
+    BLACK,
+    BLUE,
+    RED,
+    GREEN,
+    YELLOW,
+    GRAY,
+    FUCHSIA,
+    ORANGE,
+    TEAL,
+    CRIMSON;
+
+    fun toChar(): Char =
+        when (this) {
+            BLACK -> '.'
+            BLUE -> 'b'
+            RED -> 'r'
+            GREEN -> 'g'
+            YELLOW -> 'y'
+            GRAY -> 'a'
+            FUCHSIA -> 'f'
+            ORANGE -> 'o'
+            TEAL -> 't'
+            CRIMSON -> 'c'
+        }
+
+    companion object {
+        private val intToColor = List(values().size) { values()[it] }
+
+        fun fromInt(i: Int): ArcColor {
+            require(i in intToColor.indices) { "no color for $i" }
+            return intToColor[i]
+        }
+
+        private val charToColor = values().associateBy { it.toChar() }
+
+        fun fromChar(ch: Char): ArcColor {
+            val result = charToColor[ch]
+            require(result != null) {
+                "unknown color character code '$ch'"
+            }
+            return result
+        }
+    }
+}
+
 /**
- * A grid with dimensions `width, height`, indexed by `[x, y]` where `x in 0 until width` goes left to right
+ * A mutable grid of colors. The grid's dimensions are `width, height`, indexed by `[x, y]` where `x in 0 until width` goes left to right
  * and `y in 0 until height` goes top to bottom.
  */
 data class ArcGrid(
@@ -159,4 +205,24 @@ fun loadTaskFromFile(file: File): ArcTask {
 
 fun loadTaskFromString(taskJson: String): SerializedTask {
     TODO()
+}
+
+data class Offset(val dx: Int, val dy: Int) {
+    operator fun times(m: Int) = Offset(dx * m, dy + m)
+}
+
+enum class Direction(val dx: Int, val dy: Int) {
+    RIGHT(1, 0),
+    DOWN_RIGHT(1, 1),
+    DOWN(0, 1),
+    DOWN_LEFT(-1, 1),
+    LEFT(-1, 0),
+    UP_LEFT(-1, -1);
+
+    operator fun times(m: Int) = Offset(dx * m, dy + m)
+
+    fun rotateClockwise45NDegrees(n: Int): Direction {
+        val newOrdinal = (ordinal + n) % values().size
+        return values()[newOrdinal]
+    }
 }
