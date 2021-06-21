@@ -208,7 +208,7 @@ fun loadTaskFromString(taskJson: String): SerializedTask {
 }
 
 data class Offset(val dx: Int, val dy: Int) {
-    operator fun times(m: Int) = Offset(dx * m, dy + m)
+    operator fun times(m: Int) = Offset(dx * m, dy * m)
 }
 
 enum class Direction(val dx: Int, val dy: Int) {
@@ -219,7 +219,7 @@ enum class Direction(val dx: Int, val dy: Int) {
     LEFT(-1, 0),
     UP_LEFT(-1, -1);
 
-    operator fun times(m: Int) = Offset(dx * m, dy + m)
+    operator fun times(m: Int) = Offset(dx * m, dy * m)
 
     fun rotateClockwise45NDegrees(n: Int): Direction {
         val newOrdinal = (ordinal + n) % values().size
